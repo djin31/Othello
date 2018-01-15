@@ -14,14 +14,172 @@ void initialise(){
 	white=2;
 }
 
-void display(int move_row,int move_col,int type){
+void flip_squares(int move_row,int move_col,int type){
 	int temp;
-	if (move_row>0){
-		temp=8*move_row + move_col - 8;
-		while (state[temp]==2){
-			if state[temp]
+    int other_type;
+    if (type==1)
+        other_type=2;
+    else
+        other_type=1;
+	if (move_row>0){           
+		temp=8*move_row + move_col - 8;   //check up
+		while (state[temp]==other_type){
+			if (temp>7)
+                temp-=8;
+            else
+                break;
 		}
+        if (temp>0){
+            if (state[temp]==type){
+                while (temp<move_row){
+                    state[temp]=type;
+                    temp+=8;
+                }
+            }
+        }
+
+        if (move_col<7){
+            temp=8*move_row+move_col-7;         //check up right diagonal
+            while (state[temp]==other_type){
+                if (temp>7)
+                    temp-=7;
+                else
+                    break;
+            }   
+            if (temp>0){
+                if (state[temp]==type){
+                    while (temp<move_row){
+                        state[temp]=type;
+                        temp+=7;
+                    }
+                }
+            }
+        }
+        
+
+        if (move_col>0){
+            temp=8*move_row+move_col-9;         //check up left diagonal
+            while (state[temp]==other_type){
+                if (temp>0)
+                    temp-=9;
+                else
+                    break;
+            }
+            if (temp>0){
+                if (state[temp]==type){
+                    while (temp<move_row){
+                        state[temp]=type;
+                        temp+=9;
+                    }
+                }
+            }   
+        }
+        
 	}
+
+    if (move_row<7){
+        temp=8*move_row + move_col + 8;   //check down
+        while (state[temp]==other_type){
+            if (temp<56)
+                temp+=8;
+            else
+                break;
+        }
+        if (temp<64){
+            if (state[temp]==type){
+                while (temp<move_row){
+                    state[temp]=type;
+                    temp-=8;
+                }
+            }
+        }
+
+        if (move_col>0){
+            temp=8*move_row + move_col + 7;     //check left down diagonal
+            while (state[temp]==other_type){
+                if (temp<56)
+                    temp+=7;
+                else
+                    break;
+            }
+            if (temp<64){
+                if (state[temp]==type){
+                    while (temp<move_row){
+                        state[temp]=type;
+                        temp-=7;
+                    }
+                }
+            }   
+        }
+
+        if (move_col<7){
+            temp=8*move_row + move_col + 9;     //check right down diagonal
+            while (state[temp]==other_type){
+                if (temp<56)
+                    temp+=9;
+                else
+                    break;
+            }
+            if (temp<64){
+                if (state[temp]==type){
+                    while (temp<move_row){
+                        state[temp]=type;
+                        temp-=9;
+                    }
+                }
+            }   
+        }
+
+    }
+
+    if (move_col<7){
+        temp=8*move_row + move_col + 1;   //check right
+        limit = 8*move_row-8;
+        while (state[temp]==other_type){
+            if (temp<limit)
+                temp+=1;
+            else
+                break;
+        }
+        if (temp<limit){
+            if (state[temp]==type){
+                while (temp<move_row){
+                    state[temp]=type;
+                    temp-=1;
+                }
+            }
+        }
+    }
+
+    if (move_col>0){
+        temp=8*move_row + move_col - 1;   //check left
+        limit = 8*move_row + 7;
+        while (state[temp]==other_type){
+            if (temp<limit)
+                temp-=1;
+            else
+                break;
+        }
+        if (temp<limit){
+            if (state[temp]==type){
+                while (temp<move_row){
+                    state[temp]=type;
+                    temp+=1;
+                }
+            }
+        }
+    }
+}
+
+void display(){
+    temp=0;
+    for (int i=0;i<7;i++){
+        for (int j=0;j<7;j++){
+            printf("%d ",state[temp]);
+            temp+=1;
+        }
+        printf("\n");
+    }
 }
 
 int main()
