@@ -1,12 +1,53 @@
 #include <stdio.h>
 int state[64];
+int black=2;
+int white=2;
+
+void initialise(){
+	for (int i=0;i<64;i++)
+		state[i]=0;
+	state[15]=1;
+	state[16]=2;
+	state[23]=2;
+	state[24]=1;
+	black=2;
+	white=2;
+}
+
+void display(int move_row,int move_col,int type){
+	int temp;
+	if (move_row>0){
+		temp=8*move_row + move_col - 8;
+		while (state[temp]==2){
+			if state[temp]
+		}
+	}
+}
 
 int main()
 {
-	
+	initialise();
 	int move_row,move_col;
-	scanf("%d",move_row);
-	scanf("%d",move_col);
+	bool valid_move;
+	int type=1;
+	while (black+white<64){
+		scanf("%d",move_row);
+		scanf("%d",move_col);
+		valid_move=checkValid(move_row,move_col,type);
+		while (valid_move==0){
+			scanf("%d",move_row);
+			scanf("%d",move_col);
+			valid_move=checkValid(move_row,move_col,type);
+		}
+		state[8*move_row+move_col]=type;
+		display(move_row,move_col,type);
+		if (type==1)
+			type=2;
+		else
+			type=1;
+
+
+	}
 
 
 }
