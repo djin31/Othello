@@ -63,7 +63,7 @@ int checkValid(int x, int y, int type){    //x -> row num, y -> col num
         opposite = 1;
     }
     if(state[8*x + y] != 0){
-        return false;
+        return 0;
     }
     
     // checking for another disc of same color in row
