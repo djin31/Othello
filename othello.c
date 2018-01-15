@@ -134,7 +134,7 @@ void flip_squares(int move_row,int move_col,int type){
 
     if (move_col<7){
         temp=8*move_row + move_col + 1;   //check right
-        limit = 8*move_row-8;
+        int limit = 8*move_row-8;
         while (state[temp]==other_type){
             if (temp<limit)
                 temp+=1;
@@ -153,7 +153,7 @@ void flip_squares(int move_row,int move_col,int type){
 
     if (move_col>0){
         temp=8*move_row + move_col - 1;   //check left
-        limit = 8*move_row + 7;
+        int limit = 8*move_row + 7;
         while (state[temp]==other_type){
             if (temp<limit)
                 temp-=1;
@@ -172,7 +172,8 @@ void flip_squares(int move_row,int move_col,int type){
 }
 
 void display(){
-    temp=0;
+    int temp=0;
+    printf("Player 1:%d Player 2:%d\n",black,white );
     for (int i=0;i<7;i++){
         for (int j=0;j<7;j++){
             printf("%d ",state[temp]);
@@ -324,25 +325,40 @@ int main()
 {
 	initialise();
 	int move_row,move_col;
-	bool valid_move;
+	int valid_move;
 	int type=1;
+	printf("Let the game begin\n");
+	fflush(stdout);
 	while (black+white<64){
-		scanf("%d",move_row);
-		scanf("%d",move_col);
+        printf("Enter move coordinates\n");
+        fflush(stdout);
+		scanf("%d\n",&move_row);
+		scanf("%d\n",&move_col);
 		valid_move=checkValid(move_row,move_col,type);
+        printf("%d\n",valid_move);
+        fflush(stdout);
 		while (valid_move==0){
-			scanf("%d",move_row);
-			scanf("%d",move_col);
+			printf("Invalid move\n");
+			fflush(stdout);
+			scanf("%d",&move_row);
+			scanf("%d",&move_col);
 			valid_move=checkValid(move_row,move_col,type);
 		}
 		state[8*move_row+move_col]=type;
-		display(move_row,move_col,type);
-		if (type==1)
+        flip_squares(move_row,move_col,type);
+		display();
+		fflush(stdout);
+		if (type==1){
 			type=2;
-		else
+			printf("%s\n","Player 2 turn" );
+			fflush(stdout);
+		}
+		else{
 			type=1;
-
-
+			printf("%s\n","Player 1 turn" );
+			fflush(stdout);
+		}
 	}
+	return 0;
 }
 
