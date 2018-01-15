@@ -187,5 +187,5 @@ int checkValid(int x, int y, int type){    //x -> row num, y -> col num
 			score++;
         }
     }
-    return scoreTemp;
+    return score;
 }
