@@ -53,6 +53,7 @@ int main()
 }
 
 int checkValid(int x, int y, int type){    //x -> row num, y -> col num
+    int score = 0;
     int scoreTemp = 0;
     int opposite;
     if(type == 1){
@@ -61,83 +62,129 @@ int checkValid(int x, int y, int type){    //x -> row num, y -> col num
     else{
         opposite = 1;
     }
-    if(state[8*x + y] == 1 || state[8*x + y] == 2){
+    if(state[8*x + y] != 0){
         return false;
     }
     
     // checking for another disc of same color in row
-    
+    scoreTemp = 0;
     for(int i = x+1; i < 8; i++){
-        if(state[8*i+y] == 0 || state[8*i+y] == type){
+        if(state[8*i+y] == type){
             break;
         }        
+        if(state[8*i+y] == 0 || i == 7){
+        	score = score - scoreTemp;
+        	break;
+        }
         else{
             scoreTemp++;
+			score++;
         }
     }
+    scoreTemp = 0;
     for(int i = x-1; i >= 0; i--){
-        if(state[8*i+y] == 0 || state[8*i+y] == type){
+        if(state[8*i+y] == type){
             break;
+        }        
+        if(state[8*i+y] == 0 || i == 0){
+        	score = score - scoreTemp;
+        	break;
         }        
         else{
             scoreTemp++;
+			score++;
         }
     }
     
     // checking in column
-    
+    scoreTemp = 0;
     for(int i = y+1; i < 8; i++){
-        if(state[8*x+i] == 0 || state[8*x+i] == type){
+        if(state[8*x+i] == type){
             break;
         }        
+        if(state[8*x+i] == 0 || i == 7){
+        	score = score - scoreTemp;
+        	break;
+        }
         else{
             scoreTemp++;
+			score++;
         }
     }
+    scoreTemp = 0;
     for(int i = y-1; i >= 0; i--){
-        if(state[8*x+i] == 0 || state[8*x+i] == type){
+        if(state[8*x+i] == type){
             break;
         }        
+        if( state[8*x+i] == 0 || i == 0){
+        	score = score - scoreTemp;
+        	break;
+        }
         else{
             scoreTemp++;
+			score++;
         }
     }
     
     //checking along diagnols
     int k = 1;
+    scoreTemp = 0;
     for(int i = x+1; i < 8; i++,k++){
-        if(state[8*i+y + k] == 0 || state[8*i+y + k] == type){
+        if(state[8*i+y + k] == type){
             break;
         }        
+        if(state[8*i+y + k] == 0 || i == 7){
+        	score = score - scoreTemp;
+        	break;
+        }
         else{
             scoreTemp++;
+			score++;
         }
     }
     k = 1;
+    scoreTemp = 0;
     for(int i = x-1; i >= 0; i--,k--){
-        if(state[8*i+y+k] == 0 || state[8*i+y+k] == type){
+        if(state[8*i+y+k] == type){
             break;
-        }        
+        }  
+        if(state[8*i+y+k] == 0 || i == 0){
+        	score = score - scoreTemp;
+        	break;
+        }      
         else{
             scoreTemp++;
+			score++;
         }
     }
     k = -1;
+    scoreTemp = 0;
     for(int i = x+1; i < 8; i++,k--){
-        if(state[8*i+y + k] == 0 || state[8*i+y + k] == type){
+        if(state[8*i+y + k] == type){
             break;
-        }        
+        }  
+        if(state[8*i+y + k] == 0 || i == 7){
+        	score = score - scoreTemp;
+        	break;
+        }      
         else{
             scoreTemp++;
+			score++;
         }
     }
     k = 1;
+    scoreTemp = 0;
     for(int i = x-1; i >= 0; i--,k++){
-        if(state[8*i+y+k] == 0 || state[8*i+y+k] == type){
+        if(state[8*i+y+k] == type){
             break;
-        }        
+        }  
+        if(state[8*i+y+k] == 0 || i == 0){
+        	score = score - scoreTemp;
+        	break;
+        }      
         else{
             scoreTemp++;
+			score++;
         }
     }
     return scoreTemp;
