@@ -280,11 +280,11 @@ int checkValid(int x, int y, int type){    //x -> row num, y -> col num
     //checking along diagonals
     int k = 1;
     scoreTemp = 0;
-    for(int i = x+1; i < 8; i++,k++){
+    for(int i = x+1; i < 8, (y+k) < 8; i++,k++){
         if(state[8*i+y + k] == type){
             break;
         }        
-        if(state[8*i+y + k] == 0 || i == 7){
+        if(state[8*i+y + k] == 0 || i == 7 || (y+k) == 7){
             score = score - scoreTemp;
             break;
         }
@@ -295,11 +295,11 @@ int checkValid(int x, int y, int type){    //x -> row num, y -> col num
     }
     k = -1;
     scoreTemp = 0;
-    for(int i = x-1; i >= 0; i--,k--){
+    for(int i = x-1; i >= 0, (y+k) >= 0; i--,k--){
         if(state[8*i+y+k] == type){
             break;
         }  
-        if(state[8*i+y+k] == 0 || i == 0){
+        if(state[8*i+y+k] == 0 || i == 0 || (y+k) == 0){
             score = score - scoreTemp;
             break;
         }      
@@ -310,11 +310,11 @@ int checkValid(int x, int y, int type){    //x -> row num, y -> col num
     }
     k = -1;
     scoreTemp = 0;
-    for(int i = x+1; i < 8; i++,k--){
+    for(int i = x+1; i < 8, (y+k) >= 0; i++,k--){
         if(state[8*i+y + k] == type){
             break;
         }  
-        if(state[8*i+y + k] == 0 || i == 7){
+        if(state[8*i+y + k] == 0 || i == 7 || (y+k) == 0){
             score = score - scoreTemp;
             break;
         }      
@@ -325,11 +325,11 @@ int checkValid(int x, int y, int type){    //x -> row num, y -> col num
     }
     k = 1;
     scoreTemp = 0;
-    for(int i = x-1; i >= 0; i--,k++){
+    for(int i = x-1; i >= 0, (y+k) < 8; i--,k++){
         if(state[8*i+y+k] == type){
             break;
         }  
-        if(state[8*i+y+k] == 0 || i == 0){
+        if(state[8*i+y+k] == 0 || i == 0 || (y+k) == 7){
             score = score - scoreTemp;
             break;
         }      
