@@ -2,7 +2,7 @@
 int state[64];
 int black=2;
 int white=2;
-
+int move ;
 void initialise(){
 	for (int i=0;i<64;i++)
 		state[i]=0;
@@ -23,7 +23,7 @@ void flip_squares(int move_row,int move_col,int type){
     else
         other_type=1;
 	if (move_row>0){           
-		temp=8*move_row + move_col - 8;   //check up
+		temp=move - 8;   //check up
 		while (state[temp]==other_type){
 			if (temp>7)
                 temp-=8;
@@ -32,7 +32,7 @@ void flip_squares(int move_row,int move_col,int type){
 		}
         if (temp>0){
             if (state[temp]==type){
-                while (temp<(8*move_row + move_col)){
+                while (temp<(move)){
                     state[temp]=type;
                     temp+=8;
                 }
@@ -40,7 +40,7 @@ void flip_squares(int move_row,int move_col,int type){
         }
 
         if (move_col<7){
-            temp=8*move_row+move_col-7;         //check up right diagonal
+            temp=move-7;         //check up right diagonal
             while (state[temp]==other_type){
                 if (temp>7)
                     temp-=7;
@@ -49,7 +49,7 @@ void flip_squares(int move_row,int move_col,int type){
             }   
             if (temp>0){
                 if (state[temp]==type){
-                    while (temp<(8*move_row + move_col)){
+                    while (temp<(move)){
                         state[temp]=type;
                         temp+=7;
                     }
@@ -59,7 +59,7 @@ void flip_squares(int move_row,int move_col,int type){
         
 
         if (move_col>0){
-            temp=8*move_row+move_col-9;         //check up left diagonal
+            temp=move-9;         //check up left diagonal
             while (state[temp]==other_type){
                 if (temp>0)
                     temp-=9;
@@ -68,7 +68,7 @@ void flip_squares(int move_row,int move_col,int type){
             }
             if (temp>0){
                 if (state[temp]==type){
-                    while (temp<(8*move_row + move_col)){
+                    while (temp<(move)){
                         state[temp]=type;
                         temp+=9;
                     }
@@ -79,7 +79,7 @@ void flip_squares(int move_row,int move_col,int type){
 	}
 
     if (move_row<7){
-        temp=8*move_row + move_col + 8;   //check down
+        temp=move + 8;   //check down
         while (state[temp]==other_type){
         	printf("flipping bits\n");
             fflush(stdout);
@@ -92,7 +92,7 @@ void flip_squares(int move_row,int move_col,int type){
             if (state[temp]==type){
             	printf("flipping bits\n");
             	fflush(stdout);
-                while (temp>(8*move_row + move_col)){
+                while (temp>(move)){
                     state[temp]=type;
                     temp-=8;
                     
@@ -103,7 +103,7 @@ void flip_squares(int move_row,int move_col,int type){
 
 
         if (move_col>0){
-            temp=8*move_row + move_col + 7;     //check left down diagonal
+            temp=move + 7;     //check left down diagonal
             while (state[temp]==other_type){
                 if (temp<56)
                     temp+=7;
@@ -112,7 +112,7 @@ void flip_squares(int move_row,int move_col,int type){
             }
             if (temp<64){
                 if (state[temp]==type){
-                    while (temp>(8*move_row + move_col)){
+                    while (temp>(move)){
                         state[temp]=type;
                         temp-=7;
                         
@@ -123,7 +123,7 @@ void flip_squares(int move_row,int move_col,int type){
         }
 
         if (move_col<7){
-            temp=8*move_row + move_col + 9;     //check right down diagonal
+            temp=move + 9;     //check right down diagonal
             while (state[temp]==other_type){
                 if (temp<56)
                     temp+=9;
@@ -132,7 +132,7 @@ void flip_squares(int move_row,int move_col,int type){
             }
             if (temp<64){
                 if (state[temp]==type){
-                    while (temp>(8*move_row + move_col)){
+                    while (temp>(move)){
                         state[temp]=type;
                         temp-=9;
                         
@@ -146,7 +146,7 @@ void flip_squares(int move_row,int move_col,int type){
 
     if (move_col<7){
     	
-        temp=8*move_row + move_col + 1;   //check right
+        temp=move + 1;   //check right
         int limit = 8*move_row+8;
         while (state[temp]==other_type){
         	printf("other_type\n");
@@ -158,7 +158,7 @@ void flip_squares(int move_row,int move_col,int type){
         }
         if (temp<limit){
             if (state[temp]==type){
-                while (temp>(8*move_row+move_col)){
+                while (temp>(move)){
                     state[temp]=type;
                     temp-=1;
                     
@@ -169,7 +169,7 @@ void flip_squares(int move_row,int move_col,int type){
     }
 
     if (move_col>0){
-        temp=8*move_row + move_col - 1;   //check left
+        temp=move - 1;   //check left
         int limit = 8*move_row - 7;
         while (state[temp]==other_type){
         	
@@ -181,7 +181,7 @@ void flip_squares(int move_row,int move_col,int type){
         if (temp>limit){
             if (state[temp]==type){
             	
-                while (temp<(8*move_row+move_col)){
+                while (temp<(move)){
                 	
                     state[temp]=type;
                     temp+=1;
@@ -194,13 +194,16 @@ void flip_squares(int move_row,int move_col,int type){
 void display(){
     int temp=0;
     printf("Player 1:%d Player 2:%d\n",black,white );
+    printf("  0 1 2 3 4 5 6 7 ");
     for (int i=0;i<8;i++){
+        printf("\n%d ",i);
         for (int j=0;j<8;j++){
             printf("%d ",state[temp]);
             temp+=1;
         }
-        printf("\n");
+        
     }
+    printf("\n");
 }
 
 int checkValid(int x, int y, int type){    //x -> row num, y -> col num
@@ -358,15 +361,17 @@ int main()
 		fflush(stdout);
 		printf("Received Coordinates (%d,%d)\n",move_row,move_col);
 		fflush(stdout);
+        move = 8*move_row+move_col;
 		valid_move=checkValid(move_row,move_col,type);
 		while (valid_move==0){
 			printf("Invalid move\n");
 			fflush(stdout);
 			scanf("%d",&move_row);
 			scanf("%d",&move_col);
+            move = 8*move_row+move_col;
 			valid_move=checkValid(move_row,move_col,type);
 		}
-		state[8*move_row+move_col]=type;
+		state[move]=type;
         flip_squares(move_row,move_col,type);
         if (type==1){
         	black+=valid_move+1;
