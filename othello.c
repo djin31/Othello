@@ -296,7 +296,7 @@ int checkValid(int x, int y, int type){    //x -> row num, y -> col num
             score++;
         }
     }
-    k = 1;
+    k = -1;
     scoreTemp = 0;
     for(int i = x-1; i >= 0; i--,k--){
         if(state[8*i+y+k] == type){
