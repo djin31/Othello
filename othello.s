@@ -10,6 +10,7 @@
 @r10 contains move_col
 @r11 for main function use
 
+@ ****************************** initialise ******************************
 initialise:
 	mov r0,[r4]
 	mov r1,[r4,#256]
@@ -105,8 +106,8 @@ checkValid_End:
 	LDMIA SP!, { r4,r5,r6,r7,r8,r9,r10 }
 	mov pc,lr
 
-@ ********************* end of checkValid ****************************
 
+@ *********************** flip_squares *******************************
 flip_squares:
 	cmp r5,#1		@set other_type
 	moveq r1,#2
@@ -230,18 +231,7 @@ flip_squares:
 			check_downleft_diagonal_while_out:
 
 
-
-
-
-
-
-
-
-
-			
-
-
-		
+@*************************** display **************************************
 
 
 main:
