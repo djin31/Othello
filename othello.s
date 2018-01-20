@@ -39,8 +39,9 @@ initialise:
 @ -> returns score of move in r0, 0 score for invalid move
 
 checkValid:
-	STMDB SP!, { r4,r5,r6,r7,r8,r9,r10 }
+	STMDB SP!, { r4,r5,r6,r7,r8,r9,r10,r11 }
 	@r3 for array beggining, r6 -> for loop index i, r7 for k, r8 for array index, r9 for #8
+	@r11 for y+k
 	ldr r3,=AA
 	mov r4,r0 @store type in r4
 	mov r0,#0 @score
@@ -58,7 +59,7 @@ checkValid_LoopIn1:
 	mla r8,r9,r6,r2
 	mov r8, r8, LSL #2
 	ldr r10,[r3,r8]
-	cmp r10,r0
+	cmp r10,r4
 	beq checkValid_LoopOut1
 	cmp r10,#0
 	beq checkValid_If1
@@ -85,7 +86,7 @@ checkValid_LoopIn2:
 	mla r8,r9,r6,r2
 	mov r8, r8, LSL #2
 	ldr r10,[r3,r8]
-	cmp r10,r0
+	cmp r10,r4
 	beq checkValid_LoopOut2
 	cmp r10,#0
 	beq checkValid_If2
@@ -102,8 +103,207 @@ checkValid_Else2:
 	b checkValid_Loop2
 checkValid_LoopOut2:
 
+@column
+
+	add r6,r2,#1
+	mov r5,#0
+checkValid_Loop3:
+	cmp r6,8
+	blt checkValid_LoopIn3
+	b checkValid_LoopOut3
+checkValid_LoopIn3:
+	mla r8,r9,r1,r6
+	mov r8, r8, LSL #2
+	ldr r10,[r3,r8]
+	cmp r10,r4
+	beq checkValid_LoopOut3
+	cmp r10,#0
+	beq checkValid_If3
+	cmp r6,#7
+	beq checkValid_If3
+	b checkValid_Else3
+checkValid_If3:
+	sub r0,r0,r5
+	b checkValid_LoopOut3
+checkValid_Else3:
+	add r0,r0,#1
+	add r5,r5,#1
+	add r6,r6,#1
+	b checkValid_Loop3
+checkValid_LoopOut3:
+
+	sub r6,r2,#1
+	mov r5,#0
+checkValid_Loop4:
+	cmp r6,0
+	bge checkValid_LoopIn4
+	b checkValid_LoopOut4
+checkValid_LoopIn4:
+	mla r8,r9,r2,r6
+	mov r8, r8, LSL #2
+	ldr r10,[r3,r8]
+	cmp r10,r4
+	beq checkValid_LoopOut4
+	cmp r10,#0
+	beq checkValid_If4
+	cmp r6,#0
+	beq checkValid_If4
+	b checkValid_Else4
+checkValid_If4:
+	sub r0,r0,r5
+	b checkValid_LoopOut4
+checkValid_Else4:
+	add r0,r0,#1
+	add r5,r5,#1
+	sub r6,r6,#1
+	b checkValid_Loop4
+checkValid_LoopOut4:
+
+@diagnols
+	
+	mov r7,#1
+	add r6,r1,#1
+	mov r5,#0
+checkValid_Loop5:
+	add r11,r2,r7
+	cmp r6,8
+	blt checkValid_Loop5_Condition2
+	b checkValid_LoopOut5
+checkValid_Loop5_Condition2:
+	cmp r11,#8
+	blt checkValid_LoopIn5
+	b checkValid_LoopOut5
+checkValid_LoopIn5
+	mla r8,r9,r6,r11
+	mov r8, r8, LSL #2
+	ldr r10,[r3,r8]
+	cmp r10,r4
+	beq checkValid_LoopOut5
+	cmp r10,#0
+	beq checkValid_If5
+	cmp r6,#7
+	beq checkValid_If5
+	cmp r11,#7
+	beq checkValid_If5
+	b checkValid_Else5
+checkValid_If5:
+	sub r0,r0,r5
+	b checkValid_LoopOut5
+checkValid_Else5:
+	add r0,r0,#1
+	add r5,r5,#1
+	add r6,r6,#1
+	add r7,r7,#1
+	b checkValid_Loop5
+checkValid_LoopOut5:
+
+	sub r6,r1,#1
+	mov r5,#0
+checkValid_Loop6:
+	sub r11,r2,#1
+	cmp r6,0
+	bge checkValid_Loop6_Condition2
+	b checkValid_LoopOut6
+checkValid_Loop6_Condition2:
+	cmp r11,#0
+	bge checkValid_LoopIn6
+	b checkValid_LoopOut6
+checkValid_LoopIn6
+	mla r8,r9,r6,r11
+	mov r8, r8, LSL #2
+	ldr r10,[r3,r8]
+	cmp r10,r4
+	beq checkValid_LoopOut6
+	cmp r10,#0
+	beq checkValid_If6
+	cmp r6,#0
+	beq checkValid_If6
+	cmp r11,#0
+	beq checkValid_If6
+	b checkValid_Else6
+checkValid_If6:
+	sub r0,r0,r5
+	b checkValid_LoopOut6
+checkValid_Else6:
+	add r0,r0,#1
+	add r5,r5,#1
+	sub r6,r6,#1
+	sub r11,r11,#1
+	b checkValid_Loop6
+checkValid_LoopOut6:
+
+	add r6,r1,#1
+	mov r5,#0
+checkValid_Loop7:
+	sub r11,r2,#1
+	cmp r6,8
+	blt checkValid_Loop7_Condition2
+	b checkValid_LoopOut7
+checkValid_Loop7_Condition2:
+	cmp r11,#0
+	bge checkValid_LoopIn7
+	b checkValid_LoopOut7
+checkValid_LoopIn7
+	mla r8,r9,r6,r11
+	mov r8, r8, LSL #2
+	ldr r10,[r3,r8]
+	cmp r10,r4
+	beq checkValid_LoopOut7
+	cmp r10,#0
+	beq checkValid_If7
+	cmp r6,#7
+	beq checkValid_If7
+	cmp r11,#0
+	beq checkValid_If7
+	b checkValid_Else7
+checkValid_If7:
+	sub r0,r0,r5
+	b checkValid_LoopOut7
+checkValid_Else7:
+	add r0,r0,#1
+	add r5,r5,#1
+	add r6,r6,#1
+	sub r11,r11,#1
+	b checkValid_Loop7
+checkValid_LoopOut7:
+
+	sub r6,r1,#1
+	mov r5,#0
+checkValid_Loop8:
+	add r11,r2,#1
+	cmp r6,0
+	bge checkValid_Loop8_Condition2
+	b checkValid_LoopOut8
+checkValid_Loop8_Condition2:
+	cmp r11,#8
+	blt checkValid_LoopIn8
+	b checkValid_LoopOut8
+checkValid_LoopIn8
+	mla r8,r9,r6,r11
+	mov r8, r8, LSL #2
+	ldr r10,[r3,r8]
+	cmp r10,r4
+	beq checkValid_LoopOut8
+	cmp r10,#0
+	beq checkValid_If8
+	cmp r6,#0
+	beq checkValid_If8
+	cmp r11,#7
+	beq checkValid_If8
+	b checkValid_Else8
+checkValid_If8:
+	sub r0,r0,r5
+	b checkValid_LoopOut8
+checkValid_Else8:
+	add r0,r0,#1
+	add r5,r5,#1
+	sub r6,r6,#1
+	add r11,r11,#1
+	b checkValid_Loop8
+checkValid_LoopOut8:
+
 checkValid_End:
-	LDMIA SP!, { r4,r5,r6,r7,r8,r9,r10 }
+	LDMIA SP!, { r4,r5,r6,r7,r8,r9,r10,r11 }
 	mov pc,lr
 
 
