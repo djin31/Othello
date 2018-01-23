@@ -12,13 +12,14 @@
 
 @ ****************************** initialise ******************************
 initialise:
-	mov r0,[r4]
-	mov r1,[r4,#256]
+	mov r0,r4
+	add r1,r4,#256
 	mov r2,#0
 	
 	initialise_label1:
 		str r2,[r0]
 		cmp r0,r1
+		addlt r0,r0,#1
 		blt initialise_label1
 
 	mov r2,#1
@@ -48,296 +49,299 @@ checkValid:
 	mov r5,#0 @scoreTemp
 	mov r9,#8
 
-@row
+	@row
 
-	add r6,r1,#1
-checkValid_Loop1:
-	cmp r6,8
-	blt checkValid_LoopIn1
-	b checkValid_LoopOut1
-checkValid_LoopIn1:
-	mla r8,r9,r6,r2
-	mov r8, r8, LSL #2
-	ldr r10,[r3,r8]
-	cmp r10,r4
-	beq checkValid_LoopOut1
-	cmp r10,#0
-	beq checkValid_If1
-	cmp r6,#7
-	beq checkValid_If1
-	b checkValid_Else1
-checkValid_If1:
-	sub r0,r0,r5
-	b checkValid_LoopOut1
-checkValid_Else1:
-	add r0,r0,#1
-	add r5,r5,#1
-	add r6,r6,#1
-	b checkValid_Loop1
-checkValid_LoopOut1:
+		add r6,r1,#1
+	checkValid_Loop1:
+		cmp r6,#8
+		blt checkValid_LoopIn1
+		b checkValid_LoopOut1
+	checkValid_LoopIn1:
+		mla r8,r9,r6,r2
+		mov r8, r8, LSL #2
+		ldr r10,[r3,r8]
+		cmp r10,r4
+		beq checkValid_LoopOut1
+		cmp r10,#0
+		beq checkValid_If1
+		cmp r6,#7
+		beq checkValid_If1
+		b checkValid_Else1
+	checkValid_If1:
+		sub r0,r0,r5
+		b checkValid_LoopOut1
+	checkValid_Else1:
+		add r0,r0,#1
+		add r5,r5,#1
+		add r6,r6,#1
+		b checkValid_Loop1
+	checkValid_LoopOut1:
 
-	sub r6,r1,#1
-	mov r5,#0
-checkValid_Loop2:
-	cmp r6,0
-	bge checkValid_LoopIn2
-	b checkValid_LoopOut2
-checkValid_LoopIn2:
-	mla r8,r9,r6,r2
-	mov r8, r8, LSL #2
-	ldr r10,[r3,r8]
-	cmp r10,r4
-	beq checkValid_LoopOut2
-	cmp r10,#0
-	beq checkValid_If2
-	cmp r6,#0
-	beq checkValid_If2
-	b checkValid_Else2
-checkValid_If2:
-	sub r0,r0,r5
-	b checkValid_LoopOut2
-checkValid_Else2:
-	add r0,r0,#1
-	add r5,r5,#1
-	sub r6,r6,#1
-	b checkValid_Loop2
-checkValid_LoopOut2:
+		sub r6,r1,#1
+		mov r5,#0
+	checkValid_Loop2:
+		cmp r6,#0
+		bge checkValid_LoopIn2
+		b checkValid_LoopOut2
+	checkValid_LoopIn2:
+		mla r8,r9,r6,r2
+		mov r8, r8, LSL #2
+		ldr r10,[r3,r8]
+		cmp r10,r4
+		beq checkValid_LoopOut2
+		cmp r10,#0
+		beq checkValid_If2
+		cmp r6,#0
+		beq checkValid_If2
+		b checkValid_Else2
+	checkValid_If2:
+		sub r0,r0,r5
+		b checkValid_LoopOut2
+	checkValid_Else2:
+		add r0,r0,#1
+		add r5,r5,#1
+		sub r6,r6,#1
+		b checkValid_Loop2
+	checkValid_LoopOut2:
 
-@column
+	@column
 
-	add r6,r2,#1
-	mov r5,#0
-checkValid_Loop3:
-	cmp r6,8
-	blt checkValid_LoopIn3
-	b checkValid_LoopOut3
-checkValid_LoopIn3:
-	mla r8,r9,r1,r6
-	mov r8, r8, LSL #2
-	ldr r10,[r3,r8]
-	cmp r10,r4
-	beq checkValid_LoopOut3
-	cmp r10,#0
-	beq checkValid_If3
-	cmp r6,#7
-	beq checkValid_If3
-	b checkValid_Else3
-checkValid_If3:
-	sub r0,r0,r5
-	b checkValid_LoopOut3
-checkValid_Else3:
-	add r0,r0,#1
-	add r5,r5,#1
-	add r6,r6,#1
-	b checkValid_Loop3
-checkValid_LoopOut3:
+		add r6,r2,#1
+		mov r5,#0
+	checkValid_Loop3:
+		cmp r6,#8
+		blt checkValid_LoopIn3
+		b checkValid_LoopOut3
+	checkValid_LoopIn3:
+		mla r8,r9,r1,r6
+		mov r8, r8, LSL #2
+		ldr r10,[r3,r8]
+		cmp r10,r4
+		beq checkValid_LoopOut3
+		cmp r10,#0
+		beq checkValid_If3
+		cmp r6,#7
+		beq checkValid_If3
+		b checkValid_Else3
+	checkValid_If3:
+		sub r0,r0,r5
+		b checkValid_LoopOut3
+	checkValid_Else3:
+		add r0,r0,#1
+		add r5,r5,#1
+		add r6,r6,#1
+		b checkValid_Loop3
+	checkValid_LoopOut3:
 
-	sub r6,r2,#1
-	mov r5,#0
-checkValid_Loop4:
-	cmp r6,0
-	bge checkValid_LoopIn4
-	b checkValid_LoopOut4
-checkValid_LoopIn4:
-	mla r8,r9,r2,r6
-	mov r8, r8, LSL #2
-	ldr r10,[r3,r8]
-	cmp r10,r4
-	beq checkValid_LoopOut4
-	cmp r10,#0
-	beq checkValid_If4
-	cmp r6,#0
-	beq checkValid_If4
-	b checkValid_Else4
-checkValid_If4:
-	sub r0,r0,r5
-	b checkValid_LoopOut4
-checkValid_Else4:
-	add r0,r0,#1
-	add r5,r5,#1
-	sub r6,r6,#1
-	b checkValid_Loop4
-checkValid_LoopOut4:
+		sub r6,r2,#1
+		mov r5,#0
+	checkValid_Loop4:
+		cmp r6,#0
+		bge checkValid_LoopIn4
+		b checkValid_LoopOut4
+	checkValid_LoopIn4:
+		mla r8,r9,r2,r6
+		mov r8, r8, LSL #2
+		ldr r10,[r3,r8]
+		cmp r10,r4
+		beq checkValid_LoopOut4
+		cmp r10,#0
+		beq checkValid_If4
+		cmp r6,#0
+		beq checkValid_If4
+		b checkValid_Else4
+	checkValid_If4:
+		sub r0,r0,r5
+		b checkValid_LoopOut4
+	checkValid_Else4:
+		add r0,r0,#1
+		add r5,r5,#1
+		sub r6,r6,#1
+		b checkValid_Loop4
+	checkValid_LoopOut4:
 
-@diagnols
-	
-	mov r7,#1
-	add r6,r1,#1
-	mov r5,#0
-checkValid_Loop5:
-	add r11,r2,r7
-	cmp r6,8
-	blt checkValid_Loop5_Condition2
-	b checkValid_LoopOut5
-checkValid_Loop5_Condition2:
-	cmp r11,#8
-	blt checkValid_LoopIn5
-	b checkValid_LoopOut5
-checkValid_LoopIn5
-	mla r8,r9,r6,r11
-	mov r8, r8, LSL #2
-	ldr r10,[r3,r8]
-	cmp r10,r4
-	beq checkValid_LoopOut5
-	cmp r10,#0
-	beq checkValid_If5
-	cmp r6,#7
-	beq checkValid_If5
-	cmp r11,#7
-	beq checkValid_If5
-	b checkValid_Else5
-checkValid_If5:
-	sub r0,r0,r5
-	b checkValid_LoopOut5
-checkValid_Else5:
-	add r0,r0,#1
-	add r5,r5,#1
-	add r6,r6,#1
-	add r7,r7,#1
-	b checkValid_Loop5
-checkValid_LoopOut5:
+	@diagnols
+		
+		mov r7,#1
+		add r6,r1,#1
+		mov r5,#0
+	checkValid_Loop5:
+		add r11,r2,r7
+		cmp r6,#8
+		blt checkValid_Loop5_Condition2
+		b checkValid_LoopOut5
+	checkValid_Loop5_Condition2:
+		cmp r11,#8
+		blt checkValid_LoopIn5
+		b checkValid_LoopOut5
+	checkValid_LoopIn5:
+		mla r8,r9,r6,r11
+		mov r8, r8, LSL #2
+		ldr r10,[r3,r8]
+		cmp r10,r4
+		beq checkValid_LoopOut5
+		cmp r10,#0
+		beq checkValid_If5
+		cmp r6,#7
+		beq checkValid_If5
+		cmp r11,#7
+		beq checkValid_If5
+		b checkValid_Else5
+	checkValid_If5:
+		sub r0,r0,r5
+		b checkValid_LoopOut5
+	checkValid_Else5:
+		add r0,r0,#1
+		add r5,r5,#1
+		add r6,r6,#1
+		add r7,r7,#1
+		b checkValid_Loop5
+	checkValid_LoopOut5:
 
-	sub r6,r1,#1
-	mov r5,#0
-checkValid_Loop6:
-	sub r11,r2,#1
-	cmp r6,0
-	bge checkValid_Loop6_Condition2
-	b checkValid_LoopOut6
-checkValid_Loop6_Condition2:
-	cmp r11,#0
-	bge checkValid_LoopIn6
-	b checkValid_LoopOut6
-checkValid_LoopIn6
-	mla r8,r9,r6,r11
-	mov r8, r8, LSL #2
-	ldr r10,[r3,r8]
-	cmp r10,r4
-	beq checkValid_LoopOut6
-	cmp r10,#0
-	beq checkValid_If6
-	cmp r6,#0
-	beq checkValid_If6
-	cmp r11,#0
-	beq checkValid_If6
-	b checkValid_Else6
-checkValid_If6:
-	sub r0,r0,r5
-	b checkValid_LoopOut6
-checkValid_Else6:
-	add r0,r0,#1
-	add r5,r5,#1
-	sub r6,r6,#1
-	sub r11,r11,#1
-	b checkValid_Loop6
-checkValid_LoopOut6:
+		sub r6,r1,#1
+		mov r5,#0
+	checkValid_Loop6:
+		sub r11,r2,#1
+		cmp r6,#0
+		bge checkValid_Loop6_Condition2
+		b checkValid_LoopOut6
+	checkValid_Loop6_Condition2:
+		cmp r11,#0
+		bge checkValid_LoopIn6
+		b checkValid_LoopOut6
+	checkValid_LoopIn6:
+		mla r8,r9,r6,r11
+		mov r8, r8, LSL #2
+		ldr r10,[r3,r8]
+		cmp r10,r4
+		beq checkValid_LoopOut6
+		cmp r10,#0
+		beq checkValid_If6
+		cmp r6,#0
+		beq checkValid_If6
+		cmp r11,#0
+		beq checkValid_If6
+		b checkValid_Else6
+	checkValid_If6:
+		sub r0,r0,r5
+		b checkValid_LoopOut6
+	checkValid_Else6:
+		add r0,r0,#1
+		add r5,r5,#1
+		sub r6,r6,#1
+		sub r11,r11,#1
+		b checkValid_Loop6
+	checkValid_LoopOut6:
 
-	add r6,r1,#1
-	mov r5,#0
-checkValid_Loop7:
-	sub r11,r2,#1
-	cmp r6,8
-	blt checkValid_Loop7_Condition2
-	b checkValid_LoopOut7
-checkValid_Loop7_Condition2:
-	cmp r11,#0
-	bge checkValid_LoopIn7
-	b checkValid_LoopOut7
-checkValid_LoopIn7
-	mla r8,r9,r6,r11
-	mov r8, r8, LSL #2
-	ldr r10,[r3,r8]
-	cmp r10,r4
-	beq checkValid_LoopOut7
-	cmp r10,#0
-	beq checkValid_If7
-	cmp r6,#7
-	beq checkValid_If7
-	cmp r11,#0
-	beq checkValid_If7
-	b checkValid_Else7
-checkValid_If7:
-	sub r0,r0,r5
-	b checkValid_LoopOut7
-checkValid_Else7:
-	add r0,r0,#1
-	add r5,r5,#1
-	add r6,r6,#1
-	sub r11,r11,#1
-	b checkValid_Loop7
-checkValid_LoopOut7:
+		add r6,r1,#1
+		mov r5,#0
+	checkValid_Loop7:
+		sub r11,r2,#1
+		cmp r6,#8
+		blt checkValid_Loop7_Condition2
+		b checkValid_LoopOut7
+	checkValid_Loop7_Condition2:
+		cmp r11,#0
+		bge checkValid_LoopIn7
+		b checkValid_LoopOut7
+	checkValid_LoopIn7:
+		mla r8,r9,r6,r11
+		mov r8, r8, LSL #2
+		ldr r10,[r3,r8]
+		cmp r10,r4
+		beq checkValid_LoopOut7
+		cmp r10,#0
+		beq checkValid_If7
+		cmp r6,#7
+		beq checkValid_If7
+		cmp r11,#0
+		beq checkValid_If7
+		b checkValid_Else7
+	checkValid_If7:
+		sub r0,r0,r5
+		b checkValid_LoopOut7
+	checkValid_Else7:
+		add r0,r0,#1
+		add r5,r5,#1
+		add r6,r6,#1
+		sub r11,r11,#1
+		b checkValid_Loop7
+	checkValid_LoopOut7:
 
-	sub r6,r1,#1
-	mov r5,#0
-checkValid_Loop8:
-	add r11,r2,#1
-	cmp r6,0
-	bge checkValid_Loop8_Condition2
-	b checkValid_LoopOut8
-checkValid_Loop8_Condition2:
-	cmp r11,#8
-	blt checkValid_LoopIn8
-	b checkValid_LoopOut8
-checkValid_LoopIn8
-	mla r8,r9,r6,r11
-	mov r8, r8, LSL #2
-	ldr r10,[r3,r8]
-	cmp r10,r4
-	beq checkValid_LoopOut8
-	cmp r10,#0
-	beq checkValid_If8
-	cmp r6,#0
-	beq checkValid_If8
-	cmp r11,#7
-	beq checkValid_If8
-	b checkValid_Else8
-checkValid_If8:
-	sub r0,r0,r5
-	b checkValid_LoopOut8
-checkValid_Else8:
-	add r0,r0,#1
-	add r5,r5,#1
-	sub r6,r6,#1
-	add r11,r11,#1
-	b checkValid_Loop8
-checkValid_LoopOut8:
+		sub r6,r1,#1
+		mov r5,#0
+	checkValid_Loop8:
+		add r11,r2,#1
+		cmp r6,#0
+		bge checkValid_Loop8_Condition2
+		b checkValid_LoopOut8
+	checkValid_Loop8_Condition2:
+		cmp r11,#8
+		blt checkValid_LoopIn8
+		b checkValid_LoopOut8
+	checkValid_LoopIn8:
+		mla r8,r9,r6,r11
+		mov r8, r8, LSL #2
+		ldr r10,[r3,r8]
+		cmp r10,r4
+		beq checkValid_LoopOut8
+		cmp r10,#0
+		beq checkValid_If8
+		cmp r6,#0
+		beq checkValid_If8
+		cmp r11,#7
+		beq checkValid_If8
+		b checkValid_Else8
+	checkValid_If8:
+		sub r0,r0,r5
+		b checkValid_LoopOut8
+	checkValid_Else8:
+		add r0,r0,#1
+		add r5,r5,#1
+		sub r6,r6,#1
+		add r11,r11,#1
+		b checkValid_Loop8
+	checkValid_LoopOut8:
 
-checkValid_End:
-	LDMIA SP!, { r4,r5,r6,r7,r8,r9,r10,r11 }
-	mov pc,lr
+	checkValid_End:
+		LDMIA SP!, { r4,r5,r6,r7,r8,r9,r10,r11 }
+		mov pc,lr
 
 
 @ *********************** flip_squares *******************************
 flip_squares:
+	STMDB SP!, {r6,r7}
 	cmp r5,#1		@set other_type
 	moveq r1,#2
 	movne r1,#1
 
+	mov r7,#4
+
 	flip_squares_check_up:
-	cmp r9,#0
-	ble flip_squares_check_down
-	sub r0,r8,#8
+		cmp r9,#0
+		ble flip_squares_check_down
+		sub r0,r8,#8
 
 		check_up_while:
-			mla r3,r0,#4,r4
+			mla r3,r0,r7,r4
 			ldr r3,[r3]
 			cmp r3,r1
 			bne check_up_while_out
 			cmp r0,#7
 			subgt r0,r0,#8
-			bgt check_up_label1
+			bgt check_up_while
 
 		check_up_while_out:
-			mla r3,r0,#4,r4
+			mla r3,r0,r7,r4
 			ldr r3,[r3]
 			cmp r3,r5
 			bne check_upright_diagonal
 			check_up_inner_while:
-				mla r3,r0,#4,r4
+				mla r3,r0,r7,r4
 				str r5,[r3]
 				add r0,r0,#8
 				cmp r0,r8
-				blt check_up_label1_inner_while
+				blt check_up_inner_while
 
 		check_upright_diagonal:
 			cmp r10,#7
@@ -345,7 +349,7 @@ flip_squares:
 			sub r0,r8,#7
 			
 			check_upright_diagonal_while:
-				mla r3,r0,#4,r4
+				mla r3,r0,r7,r4
 				ldr r3,[r3]
 				cmp r3,r1
 				bne check_upright_diagonal_while_out
@@ -353,14 +357,14 @@ flip_squares:
 				subgt r0,r0,#7
 				bgt check_upright_diagonal_while
 			check_upright_diagonal_while_out:
-				mla r3,r0,#4,r4
+				mla r3,r0,r7,r4
 				ldr r3,[r3]
 				cmp r3,r5
 				bne check_upleft_diagonal
 				check_upright_diagonal_inner_while:
 					cmp r0,r8
 					bge check_upleft_diagonal
-					mla r3,r0,#4,r4
+					mla r3,r0,r7,r4
 					str r5,[r3]
 					add r0,r0,#7
 					b check_upright_diagonal_inner_while
@@ -370,7 +374,7 @@ flip_squares:
 			ble flip_squares_check_down
 			sub r0,r8,#9
 			check_upleft_diagonal_while:
-				mla r3,r0,#4,r4
+				mla r3,r0,r7,r4
 				ldr r3,[r3]
 				cmp r3,r1
 				bne check_upleft_diagonal_while_out
@@ -378,14 +382,14 @@ flip_squares:
 				subgt r0,r0,#9
 				bgt check_upleft_diagonal_while
 			check_upleft_diagonal_while_out:
-				mla r3,r0,#4,r4
-				ldr r3[r3]
+				mla r3,r0,r7,r4
+				ldr r3,[r3]
 				cmp r3,r5
 				bne flip_squares_check_down
 				check_upleft_diagonal_inner_while:
 					cmp r0,r8
 					bge flip_squares_check_down
-					mla r3,r0,#4,r4
+					mla r3,r0,r7,r4
 					str r5,[r3]
 					add r0,r0,#9
 					b check_upleft_diagonal_inner_while
@@ -396,7 +400,7 @@ flip_squares:
 
 		add r0,r8,#8
 		check_down_while:
-			mla r3,r0,#4,r4
+			mla r3,r0,r7,r4
 			ldr r3,[r3]
 			cmp r3,r1
 			bne check_down_while_out
@@ -404,14 +408,14 @@ flip_squares:
 			addlt r0,r0,#8
 			bgt check_down_while
 		check_down_while_out:
-			mla r3,r0,#4,r4
+			mla r3,r0,r7,r4
 			ldr r3,[r3]
 			cmp r3,r5
 			bne check_downleft_diagonal
 			check_down_inner_while:
 				cmp r0,r8
 				ble check_downleft_diagonal
-				mla r3,r0,#4,r4
+				mla r3,r0,r7,r4
 				str r5,[r3]
 				sub r0,r0,#8
 				b check_down_inner_while
@@ -421,7 +425,7 @@ flip_squares:
 			ble check_downright_diagonal
 			add r0,r8,#7
 			check_downleft_diagonal_while:
-				mla r3,r0,#4,r4
+				mla r3,r0,r7,r4
 				ldr r3,[r3]
 				cmp r3,r1
 				bne check_downleft_diagonal_while_out
@@ -429,20 +433,111 @@ flip_squares:
 				addlt r0,r0,#7
 				blt check_downleft_diagonal_while
 			check_downleft_diagonal_while_out:
-				mla r3,r0,#4,r4
+				mla r3,r0,r7,r4
 				ldr r3,[r3]
 				cmp r3,r5
 				bne check_downright_diagonal
 				check_downleft_diagonal_inner_while:
 					cmp r0,r8
 					ble check_downright_diagonal
-					mla r3,r0,#4,r4
+					mla r3,r0,r7,r4
 					str r5,[r3]
 					sub r0,r0,#7
-					b check_downleft_inner_while
+					b check_downleft_diagonal_inner_while
 
 		check_downright_diagonal:
+			cmp r10,#7
+			bge flip_squares_check_right
+			add r0,r8,#9
+			check_downright_diagonal_while:
+				mla r3,r0,r7,r4
+				ldr r3,[r3]
+				cmp r3,r1
+				bne check_downleft_diagonal_while_out
+				cmp r0,#56
+				addlt r0,r0,#9
+				blt check_downright_diagonal_while
+			check_downright_diagonal_while_out:
+				mla r3,r0,r7,r4
+				ldr r3,[r3]
+				cmp r3,r5
+				bne check_downright_diagonal
+				check_downright_diagonal_inner_while:
+					cmp r0,r8
+					ble flip_squares_check_right
+					mla r3,r0,r7,r4
+					str r5,[r3]
+					sub r0,r0,#9
+					b check_downright_diagonal_inner_while
 
+	
+	flip_squares_check_right:
+		cmp r10,#7
+		bge flip_squares_check_left
+		add r0,r8,#1
+
+		mla r6,r10,r7,r7
+		add r6,r6,r6
+
+		check_right_while:
+			mla r3,r0,r7,r4
+			ldr r3,[r3]
+			cmp r3,r1
+			bne check_right_while_out
+			cmp r0,r6
+			addlt r0,r0,#1
+			blt check_right_while
+		check_right_while_out:
+			mla r3,r0,r7,r4
+			ldr r3,[r3]
+			cmp r3,r5
+			bne flip_squares_check_left
+
+			check_right_inner_while:
+				cmp r0,r8
+				ble flip_squares_check_left
+				mla r3,r0,r7,r4
+				str r5,[r3]
+				sub r0,r0,#1
+				b check_right_inner_while
+
+	flip_squares_check_left:
+		cmp r10,#0
+		ble flip_squares_exit
+		sub r0,r8,#1
+
+		mul r6,r10,r7
+		add r6,r6,r6
+		sub r6,r6,#7
+
+		check_left_while:
+			mla r3,r0,r7,r4
+			ldr r3,[r3]
+			cmp r3,r1
+			bne check_left_while_out
+			cmp r0,r6
+			subgt r0,r0,#1
+			bgt check_left_while
+		check_left_while_out:
+			mla r3,r0,r7,r4
+			ldr r3,[r3]
+			cmp r3,r5
+			bne flip_squares_check_left
+
+			check_left_inner_while:
+				cmp r0,r8
+				bge flip_squares_exit
+				mla r3,r0,r7,r4
+				str r5,[r3]
+				add r0,r0,#1
+				b check_left_inner_while
+
+
+
+
+	flip_squares_exit:
+	LDMIA SP!, {r6,r7}
+	mov pc,lr
 
 @*************************** display **************************************
 
