@@ -229,6 +229,19 @@ flip_squares:
 				addlt r0,r0,#7
 				blt check_downleft_diagonal_while
 			check_downleft_diagonal_while_out:
+				mla r3,r0,#4,r4
+				ldr r3,[r3]
+				cmp r3,r5
+				bne check_downright_diagonal
+				check_downleft_diagonal_inner_while:
+					cmp r0,r8
+					ble check_downright_diagonal
+					mla r3,r0,#4,r4
+					str r5,[r3]
+					sub r0,r0,#7
+					b check_downleft_inner_while
+
+		check_downright_diagonal:
 
 
 @*************************** display **************************************
