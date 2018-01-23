@@ -532,9 +532,6 @@ flip_squares:
 				add r0,r0,#1
 				b check_left_inner_while
 
-
-
-
 	flip_squares_exit:
 	LDMIA SP!, {r6,r7}
 	mov pc,lr
@@ -542,9 +539,44 @@ flip_squares:
 @*************************** display **************************************
 
 
+@************************* input_moves ************************************
+
+
+@*************************** main *****************************************
 main:
 	ldr r4,=AA			@state
 	mov r5,#1  			@type
+	b initialise
+	b print_beginning_message
+	b display_state
+
+	main_while:
+		add r11,r6,r7
+		cmp r11,#64
+		bge display_winner
+
+		check_invalid_move:
+			b input_moves @set r8,r9,r10 here , have the feature of pass too
+			b checkValid
+			cmp r0,#0
+			beq display_invalid_move
+
+
+		add r11,r8,r8
+		add r11,r11,r11
+		str r5,[r4,r11]
+
+		b flip_squares
+
+		turn_switch:
+			cmp r5,#1
+			moveq r5,#2
+			movne r5,#1
+
+		b display_state
+		b main_while
+
+
 
 Exit:
 	swi SWI_Exit
