@@ -1,4 +1,5 @@
 .equ SWI_Exit, 0x11
+.equ SWI_CheckBlack, 0x202 @check Black button
 .text
 @only r0,r1,r2,r3 available for function use, if modifying any other register restore it back before exiting 
 @r4 contains state of the board
@@ -541,6 +542,36 @@ flip_squares:
 
 @************************* input_moves ************************************
 
+read_from_keyboard:
+	swi 0x203
+	cmp r0,#0
+	beq read_from_keyboard
+	mov r1,#0
+	tst r0,#255
+	addeq r1,r1,#8
+	moveq r0,r0,LSR #8
+	tst r0,#15
+	addeq r1,r1,#4
+	moveq r0,r0,LSR #4
+	tst r0,#3
+	addeq r1,r1,#2
+	moveq r0,r0, LSR #2
+	tst r0,#1
+	addeq r1,r1,#1
+
+input_moves:
+	swi SWI_CheckBlack
+	cmp r0,#0x02
+	bne turn_switch			@left button means the player will play the move, right means pass
+	b read_from_keyboard    @read row number
+	cmp r1,#8
+	bge display_invalid_move
+	mov r9,r1	
+	b read_from_keyboard    @read column number
+	cmp r1,#8
+	bge display_invalid_move
+	mov r10,r1
+	mov pc,lr
 
 @*************************** main *****************************************
 main:
@@ -556,24 +587,31 @@ main:
 		bge display_winner
 
 		check_invalid_move:
-			b input_moves @set r8,r9,r10 here , have the feature of pass too
-			b checkValid
+			bl input_moves @set r8,r9,r10 here , have the feature of pass too
+			bl checkValid
 			cmp r0,#0
-			beq display_invalid_move
+			beq display_invalid_move	@ move back to check_invalid_move
+			cmp r5,#1
+			addeq r6,r6,r0        		@changing the scores
+			addeq r6,r6,#1
+			subeq r7,r7,r0
+			addne r7,r7,r0
+			addne r7,r7,#1
+			subne r6,r6,r0
 
 
 		add r11,r8,r8
 		add r11,r11,r11
 		str r5,[r4,r11]
 
-		b flip_squares
+		bl flip_squares
 
 		turn_switch:
 			cmp r5,#1
 			moveq r5,#2
 			movne r5,#1
 
-		b display_state
+		bl display_state
 		b main_while
 
 
