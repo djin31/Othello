@@ -588,9 +588,11 @@ input_moves:
 main:
 	ldr r4,=AA			@state
 	mov r5,#1  			@type
-	b initialise
-	b display_beginning_message
-	b display_state
+	bl initialise
+	bl display_state
+	mov r0,0x02
+	swi SWI_SetLED
+
 
 	main_while:
 		add r11,r6,r7
@@ -622,6 +624,8 @@ main:
 			moveq r5,#2
 			moveq r0,0x02
 			movne r5,#1
+			movne r0,0x01
+			swi SWI_SetLED
 
 		bl display_state
 		b main_while
