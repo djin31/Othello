@@ -1,6 +1,12 @@
 .equ SWI_Exit, 0x11
 .equ SWI_CheckBlack, 0x202 @check Black button
 .equ SWI_SetLED, 0x201
+.equ SWI_Exit, 0x11 @ Stop execution
+.equ SWI_DRAW_STRING, 0x204 @display a string on LCD
+.equ SWI_DRAW_INT, 0x205 @display an int on LCD
+.equ SWI_CLEAR_DISPLAY,0x206 @clear LCD
+.equ SWI_DRAW_CHAR, 0x207 @display a char on LCD
+.equ SWI_CLEAR_LINE, 0x208 @clear a line on LCD
 
 
 
@@ -542,7 +548,87 @@ flip_squares:
 	mov pc,lr
 
 @*************************** display **************************************
+@ r8 -> loop index row
+@ r9 -> loop index column
+display_state:
+	STMDB SP!,{r0,r1,r2,r3,r8,r9,r10,r11}
+	swi SWI_CLEAR_DISPLAY
+	mov r0,#10 @ column number
+	mov r1,#1 @ row number
+	ldr r2,=Welcome @ pointer to string
+	swi SWI_DRAW_STRING @ draw to the LCD screen
+	mov r0,#1 @ column number
+	mov r1,#12 @ row number
+	ldr r2,=PlayerOneScore @ pointer to string
+	swi SWI_DRAW_STRING @ draw to the LCD scree
+	mov r0,#13 @ column number
+	mov r1,#12 @ row number
+	mov r2,r6 @ player1 score
+	swi SWI_DRAW_INT @ draw to the LCD scree
+	mov r0,#20 @ column number
+	mov r1,#12 @ row number
+	ldr r2,=PlayerTwoScore @ pointer to string
+	swi SWI_DRAW_STRING @ draw to the LCD scree
+	mov r0,#33 @ column number
+	mov r1,#12 @ row number
+	mov r2,r7 @ player1 score
+	swi SWI_DRAW_STRING @ draw to the LCD scree
+	mov r0,#1 @ column number
+	mov r1,#13 @ row number
+	ldr r2,=CuurentMove @ pointer to string
+	swi SWI_DRAW_STRING @ draw to the LCD scree
+	mov r0,#21 @ column number
+	mov r1,#13 @ row number
+	mov r2,r5 @ player
+	swi SWI_DRAW_INT @ draw to the LCD scree
+	mov r8,#0
+	mov r9,#0
+	mov r10,#2
+	mov r11,#11
+	loopForBoard:
+		cmp r9,#8
+		blt loopForBoardInColumn
+		b loopForBoardOutColumn
+	loopForBoardInColumn:
+		cmp r8,#8
+		blt loopForBoardInRow
+		b loopForBoardOutRow
+	loopForBoardInRow:
+		mla r0,r9,r10,r11 @ column number
+		add r1,r8,#3 @ row number
+		ldr r2,=Star
+		swi SWI_DRAW_STRING
+		add r0,r0,#1
+		ldr r2,=Blank
+		swi SWI_DRAW_STRING
+		add r8,r8,#1
+		b loopForBoardInColumn
+	loopForBoardOutRow:
+		mov r8,#0
+		add r9,r9,#1
+		b loopForBoard
+	loopForBoardOutColumn:
+		LDMIA SP!,{r0,r1,r2,r3,r8,r9,r10,r11}
+		mov pc,lr
 
+display_winner:
+	swi SWI_CLEAR_DISPLAY
+	mov r0,#10 @ column number
+	mov r1,#7 @ row number
+	ldr r2,=Player @ pointer to string
+	swi SWI_DRAW_STRING @ draw to the LCD scree
+	mov r0,#19 @ column number
+	mov r1,#7 @ row number
+	ldr r2,=Wins @ pointer to string
+	swi SWI_DRAW_STRING @ draw to the LCD scree
+	mov pc,lr
+
+display_invalid_move:
+	mov r0,#25 @ column number
+	mov r1,#13 @ row number
+	ldr r2,=InvalidMove @ pointer to string
+	swi SWI_DRAW_STRING @ draw to the LCD scree
+	mov pc,lr
 
 @************************* input_moves ************************************
 
@@ -590,7 +676,7 @@ main:
 	mov r5,#1  			@type
 	bl initialise
 	bl display_state
-	mov r0,0x02
+	mov r0,#0x02
 	swi SWI_SetLED
 
 
@@ -622,9 +708,9 @@ main:
 		turn_switch:
 			cmp r5,#1
 			moveq r5,#2
-			moveq r0,0x02
+			moveq r0,#0x02
 			movne r5,#1
-			movne r0,0x01
+			movne r0,#0x01
 			swi SWI_SetLED
 
 		bl display_state
@@ -635,6 +721,15 @@ main:
 Exit:
 	swi SWI_Exit
 
-.data
+	.data
 AA:	.space 400
+Welcome: .asciz "Welcome to Othello"
+Blank: .asciz " "
+PlayerOneScore: .asciz "Player One Score: "
+PlayerTwoScore: .asciz "Player Two Score: "
+CuurentMove: .asciz "Current Move: Player"
+Star: .asciz "*"
+Player: .asciz "Player"
+Wins: .asciz "Wins!"
+InvalidMove: .asciz "InvalidMove"
 	.end
