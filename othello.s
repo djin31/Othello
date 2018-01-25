@@ -1,5 +1,9 @@
 .equ SWI_Exit, 0x11
 .equ SWI_CheckBlack, 0x202 @check Black button
+.equ SWI_SetLED, 0x201
+
+
+
 .text
 @only r0,r1,r2,r3 available for function use, if modifying any other register restore it back before exiting 
 @r4 contains state of the board
@@ -558,19 +562,26 @@ read_from_keyboard:
 	moveq r0,r0, LSR #2
 	tst r0,#1
 	addeq r1,r1,#1
+	mov pc,lr
 
 input_moves:
-	swi SWI_CheckBlack
-	cmp r0,#0x02
-	bne turn_switch			@left button means the player will play the move, right means pass
-	b read_from_keyboard    @read row number
+	STMDB SP!,{r12}
+
+	button_check:
+		swi SWI_CheckBlack
+		cmp r0,#0
+		beq button_check
+		cmp r0,#0x01
+		bne turn_switch			@left button means the player will play the move, right means pass
+	bl read_from_keyboard    @read row number
 	cmp r1,#8
 	bge display_invalid_move
 	mov r9,r1	
-	b read_from_keyboard    @read column number
+	bl read_from_keyboard    @read column number
 	cmp r1,#8
 	bge display_invalid_move
 	mov r10,r1
+	LDMIA SP!,{r12}
 	mov pc,lr
 
 @*************************** main *****************************************
@@ -578,7 +589,7 @@ main:
 	ldr r4,=AA			@state
 	mov r5,#1  			@type
 	b initialise
-	b print_beginning_message
+	b display_beginning_message
 	b display_state
 
 	main_while:
@@ -609,6 +620,7 @@ main:
 		turn_switch:
 			cmp r5,#1
 			moveq r5,#2
+			moveq r0,0x02
 			movne r5,#1
 
 		bl display_state
