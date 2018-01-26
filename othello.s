@@ -30,7 +30,7 @@ initialise:
 	initialise_label1:
 		str r2,[r0]
 		cmp r0,r1
-		addlt r0,r0,#1
+		addlt r0,r0,#4
 		blt initialise_label1
 
 	mov r2,#1
@@ -561,7 +561,7 @@ display_state:
 	mov r1,#12 @ row number
 	ldr r2,=PlayerOneScore @ pointer to string
 	swi SWI_DRAW_STRING @ draw to the LCD scree
-	mov r0,#13 @ column number
+	mov r0,#18 @ column number
 	mov r1,#12 @ row number
 	mov r2,r6 @ player1 score
 	swi SWI_DRAW_INT @ draw to the LCD scree
@@ -569,13 +569,13 @@ display_state:
 	mov r1,#12 @ row number
 	ldr r2,=PlayerTwoScore @ pointer to string
 	swi SWI_DRAW_STRING @ draw to the LCD scree
-	mov r0,#33 @ column number
+	mov r0,#37 @ column number
 	mov r1,#12 @ row number
 	mov r2,r7 @ player1 score
-	swi SWI_DRAW_STRING @ draw to the LCD scree
+	swi SWI_DRAW_INT @ draw to the LCD scree
 	mov r0,#1 @ column number
 	mov r1,#13 @ row number
-	ldr r2,=CuurentMove @ pointer to string
+	ldr r2,=CurrentMove @ pointer to string
 	swi SWI_DRAW_STRING @ draw to the LCD scree
 	mov r0,#21 @ column number
 	mov r1,#13 @ row number
@@ -628,7 +628,7 @@ display_invalid_move:
 	mov r1,#13 @ row number
 	ldr r2,=InvalidMove @ pointer to string
 	swi SWI_DRAW_STRING @ draw to the LCD scree
-	mov pc,lr
+	b check_invalid_move
 
 @************************* input_moves ************************************
 
@@ -651,7 +651,7 @@ read_from_keyboard:
 	mov pc,lr
 
 input_moves:
-	STMDB SP!,{r12}
+	STMDB SP!,{r14}
 
 	button_check:
 		swi SWI_CheckBlack
@@ -667,7 +667,7 @@ input_moves:
 	cmp r1,#8
 	bge display_invalid_move
 	mov r10,r1
-	LDMIA SP!,{r12}
+	LDMIA SP!,{r14}
 	mov pc,lr
 
 @*************************** main *****************************************
@@ -708,9 +708,9 @@ main:
 		turn_switch:
 			cmp r5,#1
 			moveq r5,#2
-			moveq r0,#0x02
+			moveq r0,#0x01
 			movne r5,#1
-			movne r0,#0x01
+			movne r0,#0x02
 			swi SWI_SetLED
 
 		bl display_state
@@ -727,7 +727,7 @@ Welcome: .asciz "Welcome to Othello"
 Blank: .asciz " "
 PlayerOneScore: .asciz "Player One Score: "
 PlayerTwoScore: .asciz "Player Two Score: "
-CuurentMove: .asciz "Current Move: Player"
+CurrentMove: .asciz "Current Move: Player"
 Star: .asciz "*"
 Player: .asciz "Player"
 Wins: .asciz "Wins!"
