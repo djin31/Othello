@@ -464,7 +464,7 @@ flip_squares:
 				mla r3,r0,r7,r4
 				ldr r3,[r3]
 				cmp r3,r1
-				bne check_downleft_diagonal_while_out
+				bne check_downright_diagonal_while_out
 				cmp r0,#56
 				addlt r0,r0,#9
 				blt check_downright_diagonal_while
@@ -472,7 +472,7 @@ flip_squares:
 				mla r3,r0,r7,r4
 				ldr r3,[r3]
 				cmp r3,r5
-				bne check_downright_diagonal
+				bne flip_squares_check_right
 				check_downright_diagonal_inner_while:
 					cmp r0,r8
 					ble flip_squares_check_right
@@ -533,7 +533,7 @@ flip_squares:
 			mla r3,r0,r7,r4
 			ldr r3,[r3]
 			cmp r3,r5
-			bne flip_squares_check_left
+			bne flip_squares_exit
 
 			check_left_inner_while:
 				cmp r0,r8
@@ -688,6 +688,8 @@ input_moves:
 	cmp r1,#8
 	bge display_invalid_move
 	mov r10,r1
+	mov r0,#8
+	mla r8,r0,r9,r10
 	LDMIA SP!,{r14}
 	mov pc,lr
 
