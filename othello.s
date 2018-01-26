@@ -594,10 +594,31 @@ display_state:
 		blt loopForBoardInRow
 		b loopForBoardOutRow
 	loopForBoardInRow:
+		mov r3,r9,LSL #3
+		add r3,r3,r8
+		mov r3,r3,LSL #2
+		add r3,r3,r4
+		ldr r3,[r3]
 		mla r0,r9,r10,r11 @ column number
 		add r1,r8,#3 @ row number
-		ldr r2,=Star
-		swi SWI_DRAW_STRING
+		compareTpyeIf:
+			cmp r3,#0
+			beq compareTpyeIfZero
+			cmp r3,#1
+			beq compareTpyeIfOne
+			b compareTpyeIfTwo
+		compareTpyeIfZero:
+			ldr r2,=Star
+			swi SWI_DRAW_STRING
+			b compareTpyeIfOut
+		compareTpyeIfOne:
+			mov r2,#1
+			swi SWI_DRAW_INT
+			b compareTpyeIfOut
+		compareTpyeIfTwo:
+			mov r2,#2
+			swi SWI_DRAW_INT
+		compareTpyeIfOut:
 		add r0,r0,#1
 		ldr r2,=Blank
 		swi SWI_DRAW_STRING
