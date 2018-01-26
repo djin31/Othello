@@ -151,7 +151,7 @@ checkValid:
 		bge checkValid_LoopIn4
 		b checkValid_LoopOut4
 	checkValid_LoopIn4:
-		mla r8,r9,r2,r6
+		mla r8,r9,r1,r6
 		mov r8, r8, LSL #2
 		ldr r10,[r3,r8]
 		cmp r10,r4
