@@ -678,7 +678,7 @@ input_moves:
 		swi SWI_CheckBlack
 		cmp r0,#0
 		beq button_check
-		cmp r0,#0x01
+		cmp r0,#0x02
 		bne turn_switch			@left button means the player will play the move, right means pass
 	bl read_from_keyboard    @read row number
 	cmp r1,#8
@@ -708,6 +708,9 @@ main:
 
 		check_invalid_move:
 			bl input_moves @set r8,r9,r10 here , have the feature of pass too
+			mov r0,r5
+			mov r1,r9
+			mov r2,r10
 			bl checkValid
 			cmp r0,#0
 			beq display_invalid_move	@ move back to check_invalid_move
