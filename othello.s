@@ -594,8 +594,8 @@ display_state:
 		blt loopForBoardInRow
 		b loopForBoardOutRow
 	loopForBoardInRow:
-		mov r3,r9,LSL #3
-		add r3,r3,r8
+		mov r3,r8,LSL #3
+		add r3,r3,r9
 		mov r3,r3,LSL #2
 		add r3,r3,r4
 		ldr r3,[r3]
