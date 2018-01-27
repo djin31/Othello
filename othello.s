@@ -585,6 +585,30 @@ display_state:
 	mov r9,#0
 	mov r10,#2
 	mov r11,#11
+
+	display_index_row:
+		mov r0,#9
+		mov r1,#3
+		mov r2,#0
+	display_index_row_in:
+		swi SWI_DRAW_INT
+		add r2,r2,#1
+		add r1,r1,#1
+		cmp r2,#8
+		blt display_index_row_in
+
+	display_index_col:
+		mov r0,#11
+		mov r1,#2
+		mov r2,#0
+	display_index_col_in:
+		swi SWI_DRAW_INT
+		add r2,r2,#1
+		add r0,r0,#2
+		cmp r2,#8
+		blt display_index_col_in
+
+
 	loopForBoard:
 		cmp r9,#8
 		blt loopForBoardInColumn
