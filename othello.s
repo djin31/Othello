@@ -680,14 +680,16 @@ input_moves:
 		beq button_check
 		cmp r0,#0x02
 		bne turn_switch			@left button means the player will play the move, right means pass
+	read_row:
 	bl read_from_keyboard    @read row number
 	cmp r1,#8
-	bge display_invalid_move
+	bge read_row
 	mov r9,r1	
+	read_column:
 	bl read_from_keyboard    @read column number
 	cmp r1,#8
-	bge display_invalid_move
-	mov r10,r1
+	blt read_column
+	sub r10,r1,#8
 	mov r0,#8
 	mla r8,r0,r9,r10
 	LDMIA SP!,{r14}
