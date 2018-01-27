@@ -176,8 +176,8 @@ checkValid:
 		mov r7,#1
 		add r6,r1,#1
 		mov r5,#0
-	checkValid_Loop5:
 		add r11,r2,r7
+	checkValid_Loop5:
 		cmp r6,#8
 		blt checkValid_Loop5_Condition2
 		b checkValid_LoopOut5
@@ -211,8 +211,8 @@ checkValid:
 
 		sub r6,r1,#1
 		mov r5,#0
-	checkValid_Loop6:
 		sub r11,r2,#1
+	checkValid_Loop6:
 		cmp r6,#0
 		bge checkValid_Loop6_Condition2
 		b checkValid_LoopOut6
@@ -246,8 +246,8 @@ checkValid:
 
 		add r6,r1,#1
 		mov r5,#0
-	checkValid_Loop7:
 		sub r11,r2,#1
+	checkValid_Loop7:
 		cmp r6,#8
 		blt checkValid_Loop7_Condition2
 		b checkValid_LoopOut7
@@ -281,8 +281,8 @@ checkValid:
 
 		sub r6,r1,#1
 		mov r5,#0
-	checkValid_Loop8:
 		add r11,r2,#1
+	checkValid_Loop8:
 		cmp r6,#0
 		bge checkValid_Loop8_Condition2
 		b checkValid_LoopOut8
@@ -316,6 +316,7 @@ checkValid:
 
 	checkValid_End:
 		LDMIA SP!, { r4,r5,r6,r7,r8,r9,r10,r11 }
+		b here
 		mov pc,lr
 
 
@@ -739,7 +740,8 @@ main:
 			mov r0,r5
 			mov r1,r9
 			mov r2,r10
-			bl checkValid
+			b checkValid
+			here:
 			cmp r0,#0
 			beq display_invalid_move	@ move back to check_invalid_move
 			cmp r5,#1
