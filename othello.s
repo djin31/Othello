@@ -487,7 +487,7 @@ flip_squares:
 		bge flip_squares_check_left
 		add r0,r8,#1
 
-		mla r6,r10,r7,r7
+		mla r6,r9,r7,r7
 		add r6,r6,r6
 
 		check_right_while:
@@ -517,7 +517,7 @@ flip_squares:
 		ble flip_squares_exit
 		sub r0,r8,#1
 
-		mul r6,r10,r7
+		mul r6,r9,r7
 		add r6,r6,r6
 		sub r6,r6,#7
 
