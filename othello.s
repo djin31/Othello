@@ -41,8 +41,12 @@ initialise:
 	str r2,[r4,#112]
 	str r2,[r4,#140]
 
+	mov r2,#0
+	str r2,[r4,#300]
+
 	mov r6,#2
 	mov r7,#2
+
 
 	mov pc,lr
 
@@ -418,7 +422,7 @@ flip_squares:
 			bne check_down_while_out
 			cmp r0,#56
 			addlt r0,r0,#8
-			bgt check_down_while
+			blt check_down_while
 		check_down_while_out:
 			mla r3,r0,r7,r4
 			ldr r3,[r3]
@@ -633,8 +637,8 @@ display_state:
 			beq compareTpyeIfOne
 			b compareTpyeIfTwo
 		compareTpyeIfZero:
-			ldr r2,=Star
-			swi SWI_DRAW_STRING
+			mov r2,#'*
+			swi SWI_DRAW_CHAR
 			b compareTpyeIfOut
 		compareTpyeIfOne:
 			mov r2,#1
@@ -662,12 +666,18 @@ display_winner:
 	mov r0,#10 @ column number
 	mov r1,#7 @ row number
 	ldr r2,=Player @ pointer to string
-	swi SWI_DRAW_STRING @ draw to the LCD scree
+	swi SWI_DRAW_STRING @ draw to the LCD screen
+	cmp r6,r7
+	movgt r2,#1
+	movlt r2,#2
+	mov r0,#17 @ column number
+	mov r1,#7 @ row number
+	swi SWI_DRAW_INT@ draw to the LCD screen
 	mov r0,#19 @ column number
 	mov r1,#7 @ row number
 	ldr r2,=Wins @ pointer to string
 	swi SWI_DRAW_STRING @ draw to the LCD scree
-	mov pc,lr
+	b Exit
 
 display_invalid_move:
 	mov r0,#25 @ column number
@@ -696,6 +706,14 @@ read_from_keyboard:
 	addeq r1,r1,#1
 	mov pc,lr
 
+pass_move:
+	ldr r1,[r4,#300]
+	cmp r1,#1
+	beq display_winner
+	mov r1,#1
+	str r1,[r4,#300]
+	b turn_switch
+
 input_moves:
 	STMDB SP!,{r14}
 
@@ -704,7 +722,9 @@ input_moves:
 		cmp r0,#0
 		beq button_check
 		cmp r0,#0x02
-		bne turn_switch			@left button means the player will play the move, right means pass
+		bne pass_move			@left button means the player will play the move, right means pass
+	mov r1,#0
+	str r1,[r4,#300]
 	read_row:
 	bl read_from_keyboard    @read row number
 	cmp r1,#8
@@ -782,7 +802,7 @@ Blank: .asciz " "
 PlayerOneScore: .asciz "Player One Score: "
 PlayerTwoScore: .asciz "Player Two Score: "
 CurrentMove: .asciz "Current Move: Player"
-Star: .asciz "*"
+@Star: .asciz "*"
 Player: .asciz "Player"
 Wins: .asciz "Wins!"
 InvalidMove: .asciz "InvalidMove"
